@@ -1,0 +1,22 @@
+<div class="page-content">
+  <div class="page-header">
+    <div>
+      <h4><i class="fas fa-landmark me-2" style="color:var(--primary)"></i>Cuentas financieras</h4>
+      <small class="text-muted">Administra cuentas y define qué métodos de pago registran movimientos en cada una</small>
+    </div>
+    <button class="btn btn-primary btn-sm" id="btnNuevaCuenta"><i class="fas fa-plus me-1"></i>Nueva cuenta</button>
+  </div>
+
+  <div class="panel-card p-3 mb-3">
+    <div class="d-flex justify-content-between align-items-center mb-3"><div><h6 class="fw-bold mb-1"><i class="fas fa-sliders-h me-2"></i>Filtrar cuentas</h6><small class="text-muted">La lista se actualiza al cambiar cualquier filtro</small></div><button class="btn btn-outline-secondary btn-sm" id="btnLimpiarCuentas"><i class="fas fa-eraser me-1"></i>Limpiar</button></div>
+    <div class="row g-2 align-items-end">
+      <div class="col-md-6"><label class="form-label small">Buscar cuenta</label><div class="input-group input-group-sm"><span class="input-group-text"><i class="fas fa-search"></i></span><input type="search" class="form-control" id="buscarCuenta" placeholder="Nombre de cuenta..."></div></div>
+      <div class="col-md-3"><label class="form-label small">Tipo de cuenta</label><select class="form-select form-select-sm" id="filtroTipoCuenta"><option value="">Todos los tipos</option><option>EFECTIVO</option><option>BANCO</option><option>OTRO</option></select></div>
+      <div class="col-md-3"><label class="form-label small">Estado</label><select class="form-select form-select-sm" id="filtroEstadoCuenta"><option value="">Todos los estados</option><option value="true">Activas</option><option value="false">Inactivas</option></select></div>
+    </div>
+  </div>
+
+  <div class="panel-card overflow-hidden"><div class="table-responsive"><table class="table table-custom mb-0"><thead><tr><th>Cuenta</th><th>Tipo</th><th class="text-end">Saldo</th><th>Estado</th><th>Métodos de pago vinculados</th><th style="width:90px"></th></tr></thead><tbody id="cuentasBody"><tr><td colspan="6"><div class="empty-state"><i class="fas fa-landmark"></i><p>Cargando...</p></div></td></tr></tbody></table></div></div>
+</div>
+
+<div class="modal fade" id="modalCuentaFinanciera" tabindex="-1" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-sm"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="tituloCuenta">Nueva cuenta</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="cuentaId"><label class="form-label">Nombre *</label><input class="form-control mb-3" id="cuentaNombre" maxlength="120"><label class="form-label">Tipo *</label><select class="form-select" id="cuentaTipo"><option>EFECTIVO</option><option>BANCO</option><option>OTRO</option></select><small class="text-muted d-block mt-2">Las cuentas comienzan con saldo $0. Los movimientos se generan desde las operaciones del sistema.</small></div><div class="modal-footer"><button class="btn btn-light" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-primary" id="btnGuardarCuenta">Guardar</button></div></div></div></div>
