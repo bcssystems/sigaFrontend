@@ -117,7 +117,7 @@ function dibujarGraficas() {
   const sinDatos = document.getElementById('graficasSinDatos');
   if (!movimientos.length) { sinDatos.textContent = 'No hay movimientos en el periodo seleccionado.'; }
   else sinDatos.textContent = movimientos.length === 1000 ? 'Se muestran los primeros 1,000 movimientos del periodo.' : '';
-  dibujarPie('graficaCuentas', agrupar(movimientos, 'cuenta'), ['#670626', '#8ea96c', '#bad797', '#5f7345', '#a64d6b']);
+  dibujarPie('graficaCuentas', agrupar(movimientos, 'cuenta'), ['#52352D', '#7fa9a4', '#B1D4D0', '#557b78', '#8b6256']);
   dibujarBarras('graficaCategorias', categorias(movimientos));
   dibujarLinea('graficaEvolucion', evolucion(movimientos));
 }
