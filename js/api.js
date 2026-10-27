@@ -1,5 +1,7 @@
 const API = (() => {
-  const baseUrl = 'http://localhost:8040/api/v1';
+  const baseUrl = window.location.hostname === 'sigademo.omisoltec.mx'
+    ? `${window.location.origin}/api/v1`
+    : 'http://localhost:8040/api/v1';
   let csrfToken = null;
   let csrfPromise = null;
   let refreshPromise = null;
