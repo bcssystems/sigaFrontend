@@ -69,8 +69,8 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: var(--primary-light);
-  color: var(--primary);
+  background: var(--secondary-light);
+  color: var(--info);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -108,9 +108,9 @@
   transition: all var(--transition);
 }
 .btn-topbar-icon:hover {
-  color: var(--primary);
-  border-color: var(--primary);
-  background: var(--primary-light);
+  color: var(--info);
+  border-color: var(--secondary-dark);
+  background: var(--secondary-light);
   transform: translateY(-1px);
 }
 
