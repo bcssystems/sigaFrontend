@@ -195,7 +195,7 @@ function imprimirTicket(r) {
       @media print{body{padding:0}}
     </style></head><body>
     <div class="header" style="text-align:center;border-bottom:3px solid #2563EB;padding-bottom:8px;margin-bottom:10px">
-      <img src="assets/imgs/logotex.png" style="max-height:72px;max-width:340px" alt="Logotex">
+      <img src="assets/imgs/siga-logo.svg" style="max-height:72px;max-width:340px" alt="SIGA">
       <div style="font-size:13px;font-weight:700;color:#1e3a5f;margin-top:4px">Nota de Compra / Factura</div>
       <div class="muted">PRISCILA ARONG KIM LOPEZ</div>
     </div>
@@ -214,7 +214,7 @@ function imprimirTicket(r) {
       <span>Total rollos: ${Utils.formatCantidad(r.totalRollos)}</span>
       <span>Total: ${Utils.formatMonto(total)}</span>
     </div>
-    <p class="muted" style="margin-top:24px">Documento generado por el sistema de Logotex — Gracias por su preferencia.</p>
+    <p class="muted" style="margin-top:24px">Documento generado por el sistema SIGA — Gracias por su preferencia.</p>
     <script>window.onload=function(){window.print();}<\/script>
   </body></html>`;
 

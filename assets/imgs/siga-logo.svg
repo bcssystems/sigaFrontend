@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 160" role="img" aria-labelledby="title desc">
+  <title id="title">SIGA</title>
+  <desc id="desc">Logotipo de SIGA</desc>
+  <rect width="520" height="160" rx="24" fill="#fff7ed"/>
+  <circle cx="82" cy="80" r="48" fill="#ea580c"/>
+  <path d="M82 48c-18 0-30 10-30 24 0 15 12 21 29 25 12 3 17 6 17 12 0 7-7 11-17 11-11 0-20-4-28-12l-12 15c10 11 24 17 40 17 19 0 33-10 33-27 0-15-10-22-29-27-13-3-18-6-18-11 0-5 5-9 15-9 9 0 17 3 24 9l11-16c-9-7-20-11-35-11z" fill="#fff"/>
+  <text x="152" y="106" font-family="Inter,Arial,sans-serif" font-size="78" font-weight="800" letter-spacing="8" fill="#7c2d12">SIGA</text>
+</svg>

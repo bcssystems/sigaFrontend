@@ -1345,7 +1345,7 @@ function imprimirTicketCorte(corte) {
 </head>
 <body>
   <div class="header">
-    <img src="assets/imgs/logotex.png" class="logo" alt="Logotex">
+    <img src="assets/imgs/siga-logo.svg" class="logo" alt="SIGA">
     <div class="sub">Corte de Caja</div>
   </div>
   <div class="divider"></div>
