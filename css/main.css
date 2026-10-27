@@ -1,30 +1,31 @@
 :root {
-  --primary: #ea580c;
-  --primary-hover: #c2410c;
-  --primary-light: #ffedd5;
-  --primary-dark: #7c2d12;
-  --secondary: #fb923c;
-  --secondary-light: #fed7aa;
-  --accent: #f97316;
-  --accent-light: #ffedd5;
+  --primary: #670626;
+  --primary-hover: #4d041c;
+  --primary-light: #f4e7ec;
+  --primary-dark: #350313;
+  --secondary: #bad797;
+  --secondary-dark: #8ea96c;
+  --secondary-light: #e9f1dc;
+  --accent: #8ea96c;
+  --accent-light: #edf4e4;
   --danger: #DC2626;
   --danger-light: #FEF2F2;
-  --warning: #F59E0B;
-  --warning-light: #FFFBEB;
+  --warning: #b7791f;
+  --warning-light: #fff8e1;
   --success: #10B981;
   --success-light: #ECFDF5;
-  --info: #c2410c;
-  --info-light: #ffedd5;
-  --bg: #fff7ed;
+  --info: #5f7345;
+  --info-light: #edf4e4;
+  --bg: #f8faf5;
   --surface: #FFFFFF;
-  --text: #2d1b12;
-  --text-secondary: #614235;
-  --text-muted: #927568;
-  --border: #e7cfc1;
-  --border-light: #f3e4dc;
-  --sidebar-bg: #2b1a12;
-  --sidebar-text: #f3d9c8;
-  --sidebar-hover: #4a2b1c;
+  --text: #301c25;
+  --text-secondary: #634b56;
+  --text-muted: #907986;
+  --border: #dccbd2;
+  --border-light: #eee5e9;
+  --sidebar-bg: #350313;
+  --sidebar-text: #f3e7eb;
+  --sidebar-hover: #52051f;
   --sidebar-active: var(--primary);
   --sidebar-w: 260px;
   --topbar-h: 64px;
@@ -186,7 +187,7 @@ body {
 }
 .form-control:focus, .form-select:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(234,88,12,0.18);
+  box-shadow: 0 0 0 3px rgba(103,6,38,0.18);
 }
 .form-label {
   font-size: 0.85rem;
@@ -987,10 +988,10 @@ body {
 }
 
 /* ------- Permisos adicionales ------- */
-.bg-primary-light { background-color: rgba(234,88,12,0.12) !important; }
+.bg-primary-light { background-color: rgba(103,6,38,0.12) !important; }
 .bg-success-light { background-color: rgba(25,135,84,0.12) !important; }
 .bg-secondary-light { background-color: rgba(108,117,125,0.12) !important; }
-.text-primary { color: var(--primary, #ea580c) !important; }
+.text-primary { color: var(--primary, #670626) !important; }
 .text-success { color: var(--success, #198754) !important; }
 .text-danger { color: var(--danger, #dc3545) !important; }
 
@@ -1001,7 +1002,7 @@ body {
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  color: var(--primary, #ea580c);
+  color: var(--primary, #670626);
   margin-bottom: 0.25rem;
 }
 .permiso-grupo-items { display: flex; flex-wrap: wrap; gap: 0.5rem; }
