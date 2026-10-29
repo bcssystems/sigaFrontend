@@ -80,7 +80,6 @@
         <span class="th-nombre">Nombre</span>
         <span class="th-unidad">Unidad</span>
         <span class="th-stock">Stock</span>
-        <span class="th-rollos">Rollos</span>
         <span class="th-precio">Precio</span>
         <span class="th-estado">Estado</span>
         <span class="th-acciones"></span>
@@ -136,15 +135,9 @@
               <select class="form-select" id="productoUnidadMedida">
                 <option value="UNIDAD">UNIDAD</option>
                 <option value="METRO">METRO</option>
-                <option value="ROLLO">ROLLO</option>
                 <option value="KG">KG</option>
                 <option value="LITRO">LITRO</option>
               </select>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Metros por rollo</label>
-              <input type="number" class="form-control" id="productoMetrosPorRollo" step="0.01" min="1">
-              <div class="form-text">Solo para tela: cu&aacute;ntos metros trae cada rollo.</div>
             </div>
             <div class="col-md-4 d-flex align-items-end">
               <div class="form-check">
@@ -162,6 +155,27 @@
       <div class="modal-footer border-0">
         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-primary px-4 ripple" id="btnGuardarProducto">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="productoMultimediaModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold"><i class="fas fa-photo-video me-2" style="color:var(--primary)"></i>Archivos del producto <span id="productoMultimediaNombre" class="text-muted fs-6"></span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <span class="text-muted small">Im&aacute;genes, videos y documentos PDF. M&aacute;ximo 20 MB por archivo.</span>
+          <label class="btn btn-primary btn-sm mb-0" id="btnSubirMultimediaLabel">
+            <i class="fas fa-upload me-1"></i> Subir archivo
+            <input type="file" id="productoMultimediaInput" class="d-none" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,video/mp4,video/webm,video/quicktime,video/ogg,application/pdf">
+          </label>
+        </div>
+        <div id="productoMultimediaGallery" class="producto-media-grid"></div>
       </div>
     </div>
   </div>

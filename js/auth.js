@@ -16,8 +16,12 @@ const Auth = {
     const usuario = document.getElementById('username').value.trim();
     const password = document.getElementById('password').value;
     const button = document.getElementById('btn-login');
+    const text = document.getElementById('btn-login-text');
+    const loader = document.getElementById('btn-login-loader');
     if (!usuario || !password) return Utils.showToast('Ingresa usuario y contraseña', 'warning');
     button.disabled = true;
+    if (text) text.classList.add('d-none');
+    if (loader) loader.classList.remove('d-none');
     try {
       await API.cargarCsrf();
       const session = await API.post('/auth/login', { usuario, password });
@@ -26,7 +30,11 @@ const Auth = {
       this.showDashboard();
     } catch (error) {
       Utils.showToast(error.message || 'Credenciales incorrectas', 'error');
-    } finally { button.disabled = false; }
+    } finally {
+      button.disabled = false;
+      if (text) text.classList.remove('d-none');
+      if (loader) loader.classList.add('d-none');
+    }
   },
 
   async logout() {

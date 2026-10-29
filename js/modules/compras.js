@@ -37,7 +37,6 @@ async function cargarStats() {
     const stats = await API.get('/recepciones/stats');
     document.getElementById('statCompras').textContent = stats.totalRecepciones || 0;
     document.getElementById('statMetros').textContent = (Math.round((stats.totalMetros || 0) * 100) / 100) + ' m';
-    document.getElementById('statRollos').textContent = stats.totalRollos || 0;
     document.getElementById('statMetros30').textContent = Utils.formatCantidad(stats.metros30Dias || 0) + ' m';
   } catch (err) { /* silencioso */ }
 }
@@ -100,7 +99,7 @@ function renderTable() {
   const tbody = document.getElementById('tableComprasBody');
   if (!tbody) return;
   if (!state.compras || state.compras.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><i class="fas fa-truck-loading"></i><p>No hay compras</p></div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><i class="fas fa-truck-loading"></i><p>No hay compras</p></div></td></tr>';
     return;
   }
   tbody.innerHTML = state.compras.map(r => `<tr>
@@ -108,8 +107,7 @@ function renderTable() {
     <td>${Utils.esc(r.proveedorNombre) || '-'}</td>
     <td>${Utils.esc(r.sucursalNombre)}</td>
     <td><strong>${Math.round(r.totalMetros * 100) / 100} m</strong></td>
-    <td>${r.totalRollos}</td>
-    <td>${Utils.esc(r.usuario) || '-'}</td>
+     <td>${Utils.esc(r.usuario) || '-'}</td>
     <td>${Utils.formatDateTime(r.fechaRecepcion)}</td>
     <td class="acciones-cell">
       <button type="button" class="btn-kebab-toggle kebab-trigger" data-id="${r.idRecepcion}" data-action="menu" title="Acciones"><i class="fas fa-ellipsis-v"></i></button>
@@ -147,7 +145,7 @@ async function verCompra(id) {
     const r = await API.get('/recepciones/' + id);
     const filas = (r.detalles || []).map(d => `<tr>
       <td>${Utils.esc(d.sku)}</td><td>${Utils.esc(d.productoNombre)}</td>
-      <td>${Utils.formatCantidad(d.metros)} m</td><td>${Utils.formatCantidad(d.rollos)}</td>
+      <td>${Utils.formatCantidad(d.metros)} m</td>
       <td>${Utils.formatMonto(d.precioCompra)}</td><td>${Utils.formatMonto(d.subtotal)}</td>
     </tr>`).join('');
     const body = `
@@ -155,10 +153,10 @@ async function verCompra(id) {
       <div class="mb-2"><strong>Sucursal:</strong> ${Utils.esc(r.sucursalNombre)} &nbsp; <strong>Fecha:</strong> ${Utils.formatDateTime(r.fechaRecepcion)}</div>
       ${r.nota ? `<div class="mb-3"><strong>Nota:</strong> ${Utils.esc(r.nota)}</div>` : ''}
       <div class="table-responsive"><table class="table table-sm table-custom mb-2">
-        <thead><tr><th>SKU</th><th>Producto</th><th>Metros</th><th>Rollos</th><th>P.Compra</th><th>Subtotal</th></tr></thead>
+        <thead><tr><th>SKU</th><th>Producto</th><th>Metros</th><th>P.Compra</th><th>Subtotal</th></tr></thead>
         <tbody>${filas}</tbody>
       </table></div>
-      <div class="d-flex justify-content-end gap-4"><div class="fw-bold">Total metros: ${Utils.formatCantidad(r.totalMetros)} m</div><div class="fw-bold">Total rollos: ${Utils.formatCantidad(r.totalRollos)}</div></div>`;
+       <div class="d-flex justify-content-end gap-4"><div class="fw-bold">Total metros: ${Utils.formatCantidad(r.totalMetros)} m</div></div>`;
     Utils.showDialog('Compra ' + Utils.esc(r.folio), body);
   } catch (err) { Utils.showToast(err.message, 'error'); }
 }
@@ -174,7 +172,6 @@ function imprimirTicket(r) {
   const filas = (r.detalles || []).map(d => `<tr>
     <td>${Utils.esc(d.productoNombre)}</td><td>${Utils.esc(d.sku)}</td>
     <td style="text-align:center">${Utils.formatCantidad(d.metros)}</td>
-    <td style="text-align:center">${Utils.formatCantidad(d.rollos)}</td>
     <td style="text-align:right">${Utils.formatMonto(d.precioCompra)}</td>
     <td style="text-align:right">${Utils.formatMonto(d.subtotal)}</td>
   </tr>`).join('');
@@ -206,12 +203,11 @@ function imprimirTicket(r) {
     </div>
     <div class="muted" style="margin-bottom:4px"><b>Sucursal:</b> ${Utils.esc(r.sucursalNombre)}${r.nota ? ' &nbsp;|&nbsp; <b>Nota:</b> ' + Utils.esc(r.nota) : ''}</div>
     <table>
-      <thead><tr><th>Producto</th><th>SKU</th><th style="text-align:center">Metros</th><th style="text-align:center">Rollos</th><th style="text-align:right">Precio</th><th style="text-align:right">Subtotal</th></tr></thead>
+      <thead><tr><th>Producto</th><th>SKU</th><th style="text-align:center">Metros</th><th style="text-align:right">Precio</th><th style="text-align:right">Subtotal</th></tr></thead>
       <tbody>${filas}</tbody>
     </table>
     <div class="totales">
       <span>Total metros: ${Utils.formatCantidad(r.totalMetros)} m</span>
-      <span>Total rollos: ${Utils.formatCantidad(r.totalRollos)}</span>
       <span>Total: ${Utils.formatMonto(total)}</span>
     </div>
     <p class="muted" style="margin-top:24px">Documento generado por el sistema SIGA — Gracias por su preferencia.</p>
@@ -252,7 +248,7 @@ function agregarDetalle(producto, metros, precio) {
     return;
   }
   const opts = state.productos.map(p =>
-    `<option value="${p.idProducto}" data-metros-por-rollo="${p.metrosPorRollo || 1}" data-nombre="${Utils.esc(p.nombre)}">${Utils.esc(p.sku)} - ${Utils.esc(p.nombre)}</option>`).join('');
+    `<option value="${p.idProducto}" data-nombre="${Utils.esc(p.nombre)}">${Utils.esc(p.sku)} - ${Utils.esc(p.nombre)}</option>`).join('');
   const uid = 'det-producto-' + Date.now() + Math.floor(Math.random() * 1000);
   const fila = document.createElement('tr');
   fila.innerHTML = `
@@ -261,8 +257,7 @@ function agregarDetalle(producto, metros, precio) {
     </td>
     <td><input type="number" class="form-control form-control-sm det-metros" value="${metros || ''}" min="0.01" step="0.01" placeholder="m"></td>
     <td><input type="number" class="form-control form-control-sm det-precio" value="${precio || ''}" min="0" step="0.01" placeholder="$"></td>
-    <td class="det-rollos text-center fw-semibold">0</td>
-    <td class="det-subtotal text-end fw-semibold">$0.00</td>
+     <td class="det-subtotal text-end fw-semibold">$0.00</td>
     <td><button class="btn-action" style="color:var(--danger)" data-action="quitar"><i class="fas fa-times"></i></button></td>`;
   document.getElementById('tableDetallesCompra').appendChild(fila);
   Utils.makeSearchableSelect(uid);
@@ -292,23 +287,17 @@ function recalcularFila(fila) {
   const sel = fila.querySelector('.det-producto');
   const metros = parseFloat(fila.querySelector('.det-metros').value) || 0;
   const precio = parseFloat(fila.querySelector('.det-precio').value) || 0;
-  const opt = sel.options[sel.selectedIndex];
-  const metrosPorRollo = opt ? parseFloat(opt.dataset.metrosPorRollo) || 1 : 1;
-  const rollos = Math.ceil(metros / metrosPorRollo);
-  fila.querySelector('.det-rollos').textContent = rollos;
   fila.querySelector('.det-subtotal').textContent = Utils.formatMonto(metros * precio);
   actualizarTotales();
 }
 
 function actualizarTotales() {
   const filas = document.querySelectorAll('#tableDetallesCompra tr');
-  let metros = 0, rollos = 0;
+  let metros = 0;
   filas.forEach(f => {
     metros += parseFloat(f.querySelector('.det-metros')?.value) || 0;
-    rollos += parseFloat(f.querySelector('.det-rollos')?.textContent) || 0;
   });
   document.getElementById('cmpTotalMetros').textContent = Math.round(metros * 100) / 100 + ' m';
-  document.getElementById('cmpTotalRollos').textContent = Utils.formatCantidad(rollos);
 }
 
 async function guardar() {

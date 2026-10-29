@@ -203,19 +203,15 @@ function renderProductoNode(p) {
   let stockDisplay = p.stockActual;
   let stockClass = Utils.getStockClass(p.stockActual, p.stockMinimo);
   const unidad = (p.unidadMedida || 'UNIDAD').toLowerCase();
-  const rollos = (p.metrosPorRollo && p.metrosPorRollo > 0 && p.stockActual != null)
-    ? Math.round((p.stockActual / p.metrosPorRollo) * 10) / 10
-    : null;
   const categoria = p.categoriaNombre ? '<small class="text-muted d-block">' + Utils.esc(p.categoriaNombre) + '</small>' : '';
 
   return `<li class="producto-node${p.activo ? '' : ' inactive'}">
     <div class="producto-row">
-      <div class="producto-spacer"></div>
+      <div class="producto-list-thumb">${p.imagenPrincipalUrl ? `<img src="${Utils.esc(API.mediaBaseUrl + p.imagenPrincipalUrl)}" alt="" loading="lazy">` : '<i class="fas fa-image text-muted"></i>'}${p.cantidadMultimedia > 0 ? `<span>${p.cantidadMultimedia}</span>` : ''}</div>
       <span class="producto-sku">${Utils.esc(p.sku)}</span>
       <span class="producto-nombre"><strong>${Utils.esc(p.nombre)}</strong>${categoria}</span>
       <span class="producto-unidad">${Utils.esc(unidad)}</span>
       <span class="producto-stock ${stockClass}">${stockDisplay != null ? Utils.formatCantidad(stockDisplay) : stockDisplay}</span>
-      <span class="producto-rollos">${rollos != null ? Utils.formatCantidad(rollos) : ''}</span>
       <span class="producto-precio">${Utils.formatMonto(p.precioBase || 0)}</span>
       <span class="badge-status ${p.activo ? 'badge-active' : 'badge-inactive'}">${p.activo ? 'Activo' : 'Inactivo'}</span>
       <div class="producto-actions">
@@ -289,6 +285,7 @@ function abrirAccionesProducto(anchor, id) {
   const items = [
     { icon: 'fa-warehouse', text: 'Inventario y movimientos', color: 'var(--primary)', onClick: () => verInventario(id) },
     { icon: 'fa-eye', text: 'Ver detalle', color: 'var(--primary)', onClick: () => verDetalle(id) },
+    { icon: 'fa-photo-video', text: 'Fotos y archivos', color: 'var(--primary)', onClick: () => verMultimedia(id) },
   ];
   if (p && !p.activo && (Utils.hasPermiso('PRODUCTOS_EDITAR') || Utils.hasPermiso('PRODUCTOS_CREAR'))) {
     items.push({ icon: 'fa-undo', text: 'Reactivar', color: '#28a745', onClick: () => reactivarProducto(id) });
@@ -336,8 +333,7 @@ async function verDetalle(id) {
               <tr><th>Precio base</th><td>${Utils.formatMonto(p.precioBase || 0)}</td></tr>
               <tr><th>Costo promedio</th><td>${p.costoPromedio != null ? Utils.formatMonto(p.costoPromedio) : '—'}</td></tr>
               <tr><th>Unidad de medida</th><td>${Utils.esc(unidad)}</td></tr>
-              <tr><th>Metros por rollo</th><td>${p.metrosPorRollo != null ? p.metrosPorRollo : '—'}</td></tr>
-              <tr><th>Stock global</th><td>${p.stockActual != null ? Utils.formatCantidad(p.stockActual) + ' ' + Utils.esc(unidad) : '—'}</td></tr>
+               <tr><th>Stock global</th><td>${p.stockActual != null ? Utils.formatCantidad(p.stockActual) + ' ' + Utils.esc(unidad) : '—'}</td></tr>
             </tbody>
           </table>
         </div>
@@ -369,7 +365,6 @@ async function abrirModal(id) {
 
   document.getElementById('productoId').value = '';
   document.getElementById('productoUnidadMedida').value = 'UNIDAD';
-  document.getElementById('productoMetrosPorRollo').value = '';
   const catSel = document.getElementById('productoCategoria');
   if (catSel) {
     catSel.innerHTML = '<option value="">Seleccionar categor&iacute;a</option>' +
@@ -391,7 +386,6 @@ async function abrirModal(id) {
       document.getElementById('productoCosto').value = p.costoPromedio || '';
       document.getElementById('productoActivo').checked = p.activo !== false;
       document.getElementById('productoUnidadMedida').value = p.unidadMedida || 'UNIDAD';
-      document.getElementById('productoMetrosPorRollo').value = p.metrosPorRollo || '';
       if (catSel && p.idCategoria) catSel.value = p.idCategoria;
 
       const invs = p.inventarioSucursales || [];
@@ -480,7 +474,6 @@ async function guardarProducto() {
     costoPromedio: parseFloat(document.getElementById('productoCosto').value) || null,
     idCategoria: parseInt(document.getElementById('productoCategoria').value) || null,
     unidadMedida: document.getElementById('productoUnidadMedida').value || 'UNIDAD',
-    metrosPorRollo: parseFloat(document.getElementById('productoMetrosPorRollo').value) || null,
     activo: document.getElementById('productoActivo').checked,
     inventarios: inventarios,
   };
@@ -826,4 +819,100 @@ function renderMovimientosFullPagination(container) {
       if (p >= 0 && p < state.movFullTotalPages) cargarMovimientosFull(p);
     });
   });
+}
+
+async function verMultimedia(id) {
+  state.currentProductoId = id;
+  const modalEl = document.getElementById('productoMultimediaModal');
+  const gallery = document.getElementById('productoMultimediaGallery');
+  if (!modalEl || !gallery) return;
+  gallery.innerHTML = '<div class="text-center py-4 w-100"><i class="fas fa-spinner fa-spin"></i></div>';
+  bootstrap.Modal.getOrCreateInstance(modalEl).show();
+  try {
+    const [producto, multimedia] = await Promise.all([
+      API.get('/productos/' + id), API.get('/productos/' + id + '/multimedia')
+    ]);
+    document.getElementById('productoMultimediaNombre').textContent = producto.nombre + ' (' + producto.sku + ')';
+    state.multimedia = multimedia || [];
+    renderMultimedia();
+  } catch (err) {
+    gallery.innerHTML = '<div class="text-center py-4 text-danger">' + Utils.esc(err.message) + '</div>';
+  }
+}
+
+function renderMultimedia() {
+  const gallery = document.getElementById('productoMultimediaGallery');
+  if (!gallery) return;
+  if (!state.multimedia.length) {
+    gallery.innerHTML = '<div class="empty-state w-100"><i class="fas fa-photo-video"></i><p>No hay archivos multimedia</p></div>';
+    return;
+  }
+  const puedeEditar = Utils.hasPermiso('PRODUCTOS_EDITAR');
+  gallery.innerHTML = state.multimedia.map((m, index) => {
+    const url = Utils.esc(API.mediaBaseUrl + m.url);
+    let preview;
+    if (m.tipo === 'IMAGEN') preview = `<img src="${url}" alt="${Utils.esc(m.nombreArchivo || 'Imagen')}" loading="lazy">`;
+    else if (m.tipo === 'VIDEO') preview = `<video src="${url}" controls preload="metadata"></video>`;
+    else preview = `<a href="${url}" target="_blank" rel="noopener" class="producto-media-document"><i class="fas fa-file-pdf"></i><span>Ver PDF</span></a>`;
+    return `<div class="producto-media-card" draggable="${puedeEditar}" data-media-id="${m.idMultimedia}">
+      <div class="producto-media-preview">${preview}<span class="producto-media-order">${index + 1}</span>${m.esPrincipal ? '<span class="producto-media-primary"><i class="fas fa-star"></i> Principal</span>' : ''}</div>
+      <div class="small text-truncate mt-2" title="${Utils.esc(m.nombreArchivo || '')}">${Utils.esc(m.nombreArchivo || 'Archivo')}</div>
+      ${puedeEditar ? `<div class="d-flex gap-1 mt-2">${m.tipo === 'IMAGEN' && !m.esPrincipal ? `<button class="btn btn-sm btn-outline-warning flex-fill" data-media-action="principal" data-id="${m.idMultimedia}" title="Usar como principal"><i class="fas fa-star"></i></button>` : ''}<button class="btn btn-sm btn-outline-danger flex-fill" data-media-action="eliminar" data-id="${m.idMultimedia}" title="Eliminar"><i class="fas fa-trash"></i></button></div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function subirMultimedia(event) {
+  const archivo = event.target.files?.[0];
+  event.target.value = '';
+  if (!archivo || !state.currentProductoId) return;
+  if (archivo.size > 20 * 1024 * 1024) {
+    Utils.showToast('El archivo no puede exceder 20 MB', 'warning');
+    return;
+  }
+  const data = new FormData();
+  data.append('archivo', archivo);
+  try {
+    await API.requestUpload('/productos/' + state.currentProductoId + '/multimedia', data);
+    Utils.showToast('Archivo subido correctamente', 'success');
+    await verMultimedia(state.currentProductoId);
+  } catch (err) { Utils.showToast(err.message, 'error'); }
+}
+
+async function manejarAccionMultimedia(event) {
+  const button = event.target.closest('[data-media-action]');
+  if (!button || !state.currentProductoId) return;
+  const id = button.dataset.id;
+  try {
+    if (button.dataset.mediaAction === 'principal') {
+      await API.put('/productos/' + state.currentProductoId + '/multimedia/' + id + '/principal', {});
+      Utils.showToast('Imagen principal actualizada', 'success');
+    } else if (button.dataset.mediaAction === 'eliminar') {
+      if (!await Utils.confirmAction('¿Eliminar este archivo multimedia?', 'Confirmar', 'Eliminar')) return;
+      await API.del('/productos/' + state.currentProductoId + '/multimedia/' + id);
+      Utils.showToast('Archivo eliminado', 'success');
+    }
+    await verMultimedia(state.currentProductoId);
+  } catch (err) { Utils.showToast(err.message, 'error'); }
+}
+
+function iniciarArrastreMultimedia(event) {
+  const card = event.target.closest('[data-media-id]');
+  if (card) state.draggedMediaId = parseInt(card.dataset.mediaId, 10);
+}
+
+async function soltarMultimedia(event) {
+  event.preventDefault();
+  const target = event.target.closest('[data-media-id]');
+  if (!target || !state.draggedMediaId) return;
+  const ids = state.multimedia.map(m => m.idMultimedia);
+  const from = ids.indexOf(state.draggedMediaId);
+  const to = ids.indexOf(parseInt(target.dataset.mediaId, 10));
+  state.draggedMediaId = null;
+  if (from < 0 || to < 0 || from === to) return;
+  ids.splice(to, 0, ids.splice(from, 1)[0]);
+  try {
+    state.multimedia = await API.put('/productos/' + state.currentProductoId + '/multimedia/orden', { idsOrdenados: ids });
+    renderMultimedia();
+  } catch (err) { Utils.showToast(err.message, 'error'); }
 }

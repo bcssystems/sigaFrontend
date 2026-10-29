@@ -259,7 +259,6 @@ const Utils = {
   formatUnidad(cantidad, unidadMedida) {
     const u = (unidadMedida || 'UNIDAD').toUpperCase();
     if (u === 'METRO') return Utils.formatCantidad(cantidad) + ' m';
-    if (u === 'ROLLO') return Utils.formatCantidad(cantidad) + ' rollo' + (Number(cantidad) !== 1 ? 's' : '');
     if (u === 'PIEZA') return Utils.formatCantidad(cantidad) + ' pza' + (Number(cantidad) !== 1 ? 's' : '');
     if (u === 'KG' || u === 'KILOGRAMO') return Utils.formatCantidad(cantidad) + ' kg';
     if (u === 'LITRO') return Utils.formatCantidad(cantidad) + ' L';
