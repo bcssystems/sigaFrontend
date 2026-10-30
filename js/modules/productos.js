@@ -49,6 +49,11 @@ function bindEvents() {
     cargarProductos(0);
   });
   document.getElementById('productoTreeRoot')?.addEventListener('click', handleTableClick);
+  document.getElementById('productoMultimediaInput')?.addEventListener('change', subirMultimedia);
+  document.getElementById('productoMultimediaGallery')?.addEventListener('click', manejarAccionMultimedia);
+  document.getElementById('productoMultimediaGallery')?.addEventListener('dragstart', iniciarArrastreMultimedia);
+  document.getElementById('productoMultimediaGallery')?.addEventListener('dragover', e => e.preventDefault());
+  document.getElementById('productoMultimediaGallery')?.addEventListener('drop', soltarMultimedia);
   if (!Utils.hasPermiso('PRODUCTOS_MOVIMIENTO')) {
     const btnMov = document.getElementById('btnRegistrarMovimiento');
     if (btnMov) btnMov.style.display = 'none';
